@@ -1,8 +1,10 @@
 package com.example.androiddb;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +34,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Manga manga = mangaList.get(position);
         holder.mangaName.setText(manga.getManga_Name());
         holder.mangaAuthor.setText(manga.getManga_Author());
+
+        // Добавляем обработчик для кнопки удаления
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Получаем позицию элемента в списке
+                int adapterPosition = holder.getAdapterPosition();
+
+                // Проверяем, чтобы позиция была корректной
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    // Удаляем элемент из списка и из базы данных
+                    Manga deletedManga = mangaList.remove(adapterPosition);
+                    DataBaseHelper dbHelper = new DataBaseHelper(context);
+                    dbHelper.deleteManga(deletedManga);
+
+                    // Уведомляем адаптер об изменениях
+                    notifyItemRemoved(adapterPosition);
+                }
+            }
+        });
     }
 
     @Override
@@ -42,11 +64,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mangaName;
         TextView mangaAuthor;
+        Button deleteButton;
+
         public ViewHolder(@NonNull View itemView){
             super(itemView);
             mangaName = itemView.findViewById(R.id.m_name);
             mangaAuthor = itemView.findViewById(R.id.m_author);
+            deleteButton = itemView.findViewById(R.id.deleteButton);
         }
     }
-
 }
+

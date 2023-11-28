@@ -50,6 +50,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.insert(TABLE_NAME, null, contentValues);
     }
 
+    public void deleteManga(Manga manga) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME, COLUM_ID + " = ?", new String[]{String.valueOf(manga.getID_Manga())});
+        db.close();
+    }
+
+
     public ArrayList<Manga> getMangaList(){
 
         ArrayList<Manga> listManga = new ArrayList<>();
