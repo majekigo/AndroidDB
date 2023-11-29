@@ -36,35 +36,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.mangaName.setText(manga.getManga_Name());
         holder.mangaAuthor.setText(manga.getManga_Author());
 
-        // Добавляем обработчик для кнопки удаления
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Получаем позицию элемента в списке
                 int adapterPosition = holder.getAdapterPosition();
 
-                // Проверяем, чтобы позиция была корректной
                 if (adapterPosition != RecyclerView.NO_POSITION) {
-                    // Удаляем элемент из списка и из базы данных
                     Manga deletedManga = mangaList.remove(adapterPosition);
                     DataBaseHelper dbHelper = new DataBaseHelper(context);
                     dbHelper.deleteManga(deletedManga);
-
-                    // Уведомляем адаптер об изменениях
                     notifyItemRemoved(adapterPosition);
                 }
             }
         });
 
-        // Добавляем обработчик для элемента списка
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Создаем Intent для перехода на DetailActivity
                 Intent intent = new Intent(context, DetailActivity.class);
-                // Передаем ID манги в Intent
                 intent.putExtra("manga_id", manga.getID_Manga());
-                // Запускаем активность с подробной информацией
                 context.startActivity(intent);
             }
         });
@@ -73,6 +63,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public int getItemCount() {
         return mangaList.size();
+    }
+
+    // Добавленный метод для обновления данных
+    public void updateData(ArrayList<Manga> newMangaList) {
+        mangaList.clear();
+        mangaList.addAll(newMangaList);
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -88,4 +85,3 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 }
-
