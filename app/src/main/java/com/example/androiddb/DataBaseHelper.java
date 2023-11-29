@@ -99,4 +99,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         result.close();
         return manga;
     }
+
+    public void updateManga(Manga manga) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUM_NAME, manga.getManga_Name());
+        values.put(COLUMN_AUTHOR, manga.getManga_Author());
+        values.put(COLUMN_ADDITIONAL_INFO, manga.getAdditionalInfo());
+
+        db.update(TABLE_NAME, values, COLUM_ID + " = ?", new String[]{String.valueOf(manga.getID_Manga())});
+        db.close();
+    }
+
 }
