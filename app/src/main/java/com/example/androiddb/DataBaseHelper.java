@@ -1,5 +1,6 @@
 package com.example.androiddb;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,13 +14,13 @@ import java.util.ArrayList;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "manga.db";
-    private static final int SCHEMA = 1;
+    private static final int SCHEMA = 2;
     static final String TABLE_NAME = "manga";
 
     public static final String COLUM_ID = "id_manga";
     public static final String COLUM_NAME = "manga_name";
     public static final String COLUMN_AUTHOR = "manga_author";
-
+    public static final String COLUMN_ADDITIONAL_INFO = "additional_info";
 
     public DataBaseHelper(@Nullable Context context){
         super(context, DATABASE_NAME, null, SCHEMA);
@@ -27,28 +28,31 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME + "(" + COLUM_ID
-                + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUM_NAME
-                + " TEXT, " + COLUMN_AUTHOR + " INTEGER);");
+        sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME + "(" +
+                COLUM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUM_NAME + " TEXT, " +
+                COLUMN_AUTHOR + " TEXT, " +
+                COLUMN_ADDITIONAL_INFO + " TEXT DEFAULT '');");
     }
-
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 
-    public void addManga(Manga manga){
+
+    public void addManga(Manga manga) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        //contentValues.put(COLUM_ID, manga.getID_Manga());
         contentValues.put(COLUM_NAME, manga.getManga_Name());
         contentValues.put(COLUMN_AUTHOR, manga.getManga_Author());
+        contentValues.put(COLUMN_ADDITIONAL_INFO, manga.getAdditionalInfo()); // новый столбец
 
         sqLiteDatabase.insert(TABLE_NAME, null, contentValues);
     }
+
 
     public void deleteManga(Manga manga) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -56,22 +60,27 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-
-    public ArrayList<Manga> getMangaList(){
-
+    public ArrayList<Manga> getMangaList() {
         ArrayList<Manga> listManga = new ArrayList<>();
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor result = sqLiteDatabase.rawQuery("SELECT * FROM "+TABLE_NAME, null);
-        if(result.moveToFirst()){
-            while (result.moveToNext()){
-                int id = result.getInt(0);
-                String mangaName = result.getString(1);
-                String mangaAuthor = result.getString(2);
-                Manga manga = new Manga(id, mangaName, mangaAuthor);
+        Cursor result = sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+
+        if (result != null) {
+            while (result.moveToNext()) {
+                @SuppressLint("Range") int id = result.getInt(result.getColumnIndex(COLUM_ID));
+                @SuppressLint("Range") String mangaName = result.getString(result.getColumnIndex(COLUM_NAME));
+                @SuppressLint("Range") String mangaAuthor = result.getString(result.getColumnIndex(COLUMN_AUTHOR));
+
+                // Проверяем наличие столбца в результирующем наборе
+                int additionalInfoIndex = result.getColumnIndex(COLUMN_ADDITIONAL_INFO);
+                String additionalInfo = additionalInfoIndex != -1 ? result.getString(additionalInfoIndex) : null;
+
+                Manga manga = new Manga(id, mangaName, mangaAuthor, additionalInfo);
                 listManga.add(manga);
             }
+            result.close();
         }
-        result.close();
+
         return listManga;
     }
 
@@ -83,7 +92,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             int id = result.getInt(0);
             String mangaName = result.getString(1);
             String mangaAuthor = result.getString(2);
-            manga = new Manga(id, mangaName, mangaAuthor);
+            String additionalInfo = result.getString(3);
+
+            manga = new Manga(id, mangaName, mangaAuthor, additionalInfo);
         }
         result.close();
         return manga;

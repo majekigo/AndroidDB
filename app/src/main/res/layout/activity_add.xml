@@ -26,6 +26,16 @@
         tools:ignore="TouchTargetSizeCheck"
         tools:layout_editor_absoluteX="20dp" />
 
+    <EditText
+        android:id="@+id/manga_additional_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:hint="Дополнительная информация"
+        app:layout_constraintTop_toBottomOf="@+id/manga_author"
+        tools:ignore="TouchTargetSizeCheck"
+        tools:layout_editor_absoluteX="20dp" />
+
     <Button
         android:id="@+id/add_manga"
         android:layout_width="match_parent"

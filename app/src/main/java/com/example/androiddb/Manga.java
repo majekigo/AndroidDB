@@ -1,34 +1,37 @@
 package com.example.androiddb;
 
 public class Manga {
-
     private int ID_Manga;
-    private String Manga_Name;
-    private String Manga_Author;
+    private String manga_Name;
+    private String manga_Author;
+    private String additionalInfo; // Добавьте поле
 
-    public Manga(int ID_Manga, String manga_Name, String manga_Author){
+    public Manga(int ID_Manga, String manga_Name, String manga_Author, String additionalInfo) {
         this.ID_Manga = ID_Manga;
-        Manga_Name = manga_Name;
-        Manga_Author = manga_Author;
+        this.manga_Name = manga_Name;
+        this.manga_Author = manga_Author;
+        this.additionalInfo = additionalInfo;
     }
 
-    public int getID_Manga(){
+
+    // Добавьте геттеры и сеттеры
+    public int getID_Manga() {
         return ID_Manga;
     }
 
-    public void setID_Manga(int ID_Manga){
-        this.ID_Manga = ID_Manga;
+    public String getManga_Name() {
+        return manga_Name;
     }
 
-    public String getManga_Name(){
-        return Manga_Name;
+    public String getManga_Author() {
+        return manga_Author;
     }
 
-    public void setManga_Name(String manga_Name){
-        Manga_Name = manga_Name;
+    public String getAdditionalInfo() {
+        return additionalInfo;
     }
 
-    public String getManga_Author(){
-        return Manga_Author;
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
     }
 }
