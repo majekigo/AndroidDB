@@ -74,4 +74,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         result.close();
         return listManga;
     }
+
+    public Manga getMangaById(int mangaId) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor result = sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUM_ID + "=?", new String[]{String.valueOf(mangaId)});
+        Manga manga = null;
+        if (result.moveToFirst()) {
+            int id = result.getInt(0);
+            String mangaName = result.getString(1);
+            String mangaAuthor = result.getString(2);
+            manga = new Manga(id, mangaName, mangaAuthor);
+        }
+        result.close();
+        return manga;
+    }
 }

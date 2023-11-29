@@ -1,6 +1,7 @@
 package com.example.androiddb;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context context;
     private ArrayList<Manga> mangaList;
 
-    public RecyclerViewAdapter(Context context, ArrayList<Manga> mangaList){
+    public RecyclerViewAdapter(Context context, ArrayList<Manga> mangaList) {
         this.context = context;
         this.mangaList = mangaList;
     }
@@ -54,6 +55,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             }
         });
+
+        // Добавляем обработчик для элемента списка
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Создаем Intent для перехода на DetailActivity
+                Intent intent = new Intent(context, DetailActivity.class);
+                // Передаем ID манги в Intent
+                intent.putExtra("manga_id", manga.getID_Manga());
+                // Запускаем активность с подробной информацией
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -66,7 +80,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView mangaAuthor;
         Button deleteButton;
 
-        public ViewHolder(@NonNull View itemView){
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mangaName = itemView.findViewById(R.id.m_name);
             mangaAuthor = itemView.findViewById(R.id.m_author);
